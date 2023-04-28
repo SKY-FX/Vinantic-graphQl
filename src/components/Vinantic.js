@@ -15,6 +15,7 @@ const Vinantic = () => {
           <p className="font-bold">{bottle.name}</p>
           <p>{bottle.price} €</p>
           <p>{bottle.year}</p>
+          <p>{bottle.quality}</p>
           <p>{bottle.ref}</p>
         </div>
       ))}

@@ -1,6 +1,6 @@
-const Bottle = require("./models/bottle");
+const Bottle = require("../models/bottle");
 
-const resolvers = {
+const bottleResolvers = {
   Query: {
     getBottles: async () => {
       try {
@@ -13,4 +13,4 @@ const resolvers = {
   },
 };
 
-module.exports = resolvers;
+module.exports = bottleResolvers;

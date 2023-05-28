@@ -3,7 +3,6 @@ const dotenv = require("dotenv");
 mongoose.set("strictQuery", false);
 
 dotenv.config();
-
 let connection;
 
 const connectToDb = async () => {
@@ -15,7 +14,7 @@ const connectToDb = async () => {
       { useNewUrlParser: true }
     );
 
-    console.log(`MongoDB connected: ${connection.connection.host}`);
+    console.log(`🚀  MongoDB is connected to ${connection.connection.host}`);
     return Promise.resolve(connection);
   } catch (err) {
     console.log(`Error: ${err.message}`);
@@ -23,4 +22,4 @@ const connectToDb = async () => {
   }
 };
 
-module.exports = { connectToDb };
+module.exports = connectToDb;

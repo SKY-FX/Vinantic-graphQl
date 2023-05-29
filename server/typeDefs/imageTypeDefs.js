@@ -5,7 +5,7 @@ const imageTypeDefs = gql`
     id: ID!
     filename: String!
     contentType: String!
-    data: String
+    data: String!
   }
 
   type Query {

@@ -1,4 +1,4 @@
-const { makeExecutableSchema } = require('graphql-tools');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
 
 /* Bottle Schema */
 const bottleTypeDefs = require("./typeDefs/bottleTypeDefs");

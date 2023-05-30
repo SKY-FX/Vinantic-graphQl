@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_BOTTLES } from "../graphql/bottleQueries";
 import { GET_IMAGES } from "../graphql/imageQueries";
-import { ITEMS_PER_PAGE } from "../constants";
+import { ITEMS_PER_PAGE, SEARCH_SELECTOR_OPTIONS } from "../constants";
 
 import {
   extractImageName,
@@ -13,7 +13,7 @@ import {
 
 const useVinantic = () => {
   const [searchText, setSearchText] = useState("");
-  const [sortBy, setSortBy] = useState("");
+  const [sortBy, setSortBy] = useState(SEARCH_SELECTOR_OPTIONS.NO_SORT);
   const [filteredWinesList, setFilteredWinesList] = useState([]);
   const [winesList, setWinesList] = useState([]);
   const [imagesList, setImagesList] = useState([]);

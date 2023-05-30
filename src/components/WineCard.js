@@ -17,13 +17,13 @@ const WineCard = ({ wine }) => (
           <p className="font-serif font-bold text-xl mb-2 text-gray-500">
             {wine.name}
           </p>
-          <p className="font-serif text-gray-700 text-base-sm mt-2">
+          <p className="font-serif text-stone-500 text-base-sm mt-2">
             {wine.year}
           </p>
-          <p className="font-serif text-gray-700 text-base-sm mt-2">
+          <p className="font-serif text-stone-500 text-base-sm mt-2">
             {wine.price} €
           </p>
-          <p className="font-serif text-gray-700 text-base-sm mt-2">
+          <p className="font-serif text-stone-500 text-base-sm mt-2">
             {wine.quality}
           </p>
         </div>

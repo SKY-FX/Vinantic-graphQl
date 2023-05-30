@@ -9,11 +9,11 @@ const WineCard = ({ wine }) => (
           <img
             src={`data:${wine.contentType};base64,${wine.data}`}
             alt={wine.ref}
-            className="border-2 border-stone-300 rounded-3xl transition duration-1000 ease-in-out transform hover:scale-150"
+            className="cursor-pointer border-2 border-stone-300 rounded-3xl transition duration-1000 ease-in-out transform hover:scale-125"
           />
         )}
 
-        <div className="flex flex-col items-center mt-7">
+        <div className="flex flex-col items-center mt-7 text-center">
           <p className="font-serif font-bold text-xl mb-2 text-gray-500">
             {wine.name}
           </p>

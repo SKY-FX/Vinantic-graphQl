@@ -28,3 +28,21 @@ export const mergeWineInfosByRef = (wineData, imageData) =>
     };
   });
 
+export const filterAndSortWineList = ({ wineList, setFilteredWinesList, searchText, sortBy }) => {
+  // Filtrer les bouteilles de vin en fonction du texte de recherche
+  let filteredList = wineList.filter((wine) =>
+    wine.name.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  // Trier les bouteilles de vin en fonction de l'option de tri sélectionnée
+  if (sortBy === "year") {
+    filteredList = filteredList.sort((a, b) => a.year - b.year);
+  } else if (sortBy === "price") {
+    filteredList = filteredList.sort((a, b) => a.price - b.price);
+  } else if (sortBy === "name") {
+    filteredList = filteredList.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  // Mettre à jour la liste des bouteilles de vin filtrées et triées
+  setFilteredWinesList(filteredList);
+};

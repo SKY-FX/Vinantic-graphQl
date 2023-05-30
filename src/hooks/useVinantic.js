@@ -74,7 +74,7 @@ const useVinantic = () => {
   return {
     searchText,
     sortBy,
-    filteredWinesList,
+    wineList: filteredWinesList,
     handleSearchChange,
     handleSortChange
   };

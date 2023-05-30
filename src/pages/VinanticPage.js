@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import useVinantic from "../hooks/useVinantic";
-import TextSearchInput from "./TextSearchInput";
-import SearchSelector from "./SearchSelector";
-import WineCard from "./WineCard";
-import Title from "./Title";
-import Pagination from "./Pagination";
+import TextSearchInput from "../components/TextSearchInput";
+import SearchSelector from "../components/SearchSelector";
+import WineCard from "../components/WineCard";
+import Title from "../components/Title";
+import Pagination from "../components/Pagination";
 import { SEARCH_SELECTOR_OPTIONS } from "../constants";
 
-const Vinantic = () => {
+const VinanticPage = () => {
   const {
     currentPage,
     searchText,
     sortBy,
-    totalItems,
-    currentWineList,
+    totalWines,
+    winesList,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
+    handleGeneratePdf
   } = useVinantic();
 
   return (
@@ -39,18 +40,22 @@ const Vinantic = () => {
       </div>
 
       <div className="mt-10 p-5 border rounded-lg text-stone-500 bg-stone-200">
-        {`Vous êtes sur la page ${currentPage} du catalogue. `}
-        {totalItems !== 0
-          ? `${totalItems} bouteilles sont disponibles. `
-          : "Aucune bouteille n'est disponible. "}
-        {sortBy !== SEARCH_SELECTOR_OPTIONS.NO_SORT
-          ? `La liste ci-dessous a été triées.`
-          : "La liste ci-dessous n'a pas été triées."}
+        <p>
+          {`Vous êtes sur la page ${currentPage} du catalogue. `}
+          {totalWines !== 0
+            ? `${totalWines} bouteilles sont disponibles. `
+            : "Aucune bouteille n'est disponible. "}
+          {sortBy !== SEARCH_SELECTOR_OPTIONS.NO_SORT
+            ? `La liste ci-dessous a été triées.`
+            : "La liste ci-dessous n'a pas été triées."}
+        </p>
+
+        <p onClick={handleGeneratePdf} className="cursor-pointer font-bold hover:text-red-900 duration-500 ease-in-out ">Télécharger le catalogue au format PDF.</p>
       </div>
 
       <div className="grid gap-5 2xl:grid-cols-5 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 mt-10">
-        {currentWineList.length !== 0 &&
-          currentWineList.map((wine) => (
+        {totalWines !== 0 &&
+          winesList.map((wine) => (
             <div key={wine.id}>
               <WineCard wine={wine} />
             </div>
@@ -60,7 +65,7 @@ const Vinantic = () => {
       <div className="mt-20 mb-10">
         <Pagination
           currentPage={currentPage}
-          totalItems={totalItems}
+          totalWines={totalWines}
           onPageChange={handlePageChange}
         />
       </div>
@@ -68,4 +73,4 @@ const Vinantic = () => {
   );
 };
 
-export default Vinantic;
+export default VinanticPage;

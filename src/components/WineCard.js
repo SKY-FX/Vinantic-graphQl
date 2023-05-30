@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const WineCard = ({ wine }) => (
-  <div className="rounded-3xl shadow-md">
+  <div className="rounded-3xl shadow-md h-full">
     <div className="bg-stone-100 flex flex-col border rounded-3xl h-full justify-between">
       <div className="flex flex-col items-center m-10">
         {wine.data && (

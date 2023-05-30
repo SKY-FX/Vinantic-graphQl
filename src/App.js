@@ -1,10 +1,6 @@
 import React from "react";
-import Vinantic from "./components/Vinantic";
+import VinanticRoutes from "./routes/VinanticRoutes";
 
-function App() {
-  return (
-    <Vinantic />
-  );
-}
+const App = () => <VinanticRoutes />;
 
 export default App;

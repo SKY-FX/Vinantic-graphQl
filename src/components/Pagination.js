@@ -5,10 +5,10 @@ import { ITEMS_PER_PAGE } from "../constants";
 
 const Pagination = ({
   currentPage,
-  totalItems,
+  totalWines,
   onPageChange,
 }) => {
-  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(totalWines / ITEMS_PER_PAGE);
 
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
@@ -81,7 +81,7 @@ const Pagination = ({
 
 Pagination.propTypes = {
   currentPage: PropTypes.number.isRequired,
-  totalItems: PropTypes.number.isRequired,
+  totalWines: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
 };
 

@@ -5,22 +5,21 @@ import { GET_IMAGES } from "../graphql/imageQueries";
 import { ITEMS_PER_PAGE, SEARCH_SELECTOR_OPTIONS } from "../constants";
 
 import {
+  exportVinanticPdf,
   extractImageName,
   filterAndSortWineList,
   mergeWineInfosByRef,
 } from "../components/helper";
 
-
 const useVinantic = () => {
   const [searchText, setSearchText] = useState("");
   const [sortBy, setSortBy] = useState(SEARCH_SELECTOR_OPTIONS.NO_SORT);
-  const [filteredWinesList, setFilteredWinesList] = useState([]);
   const [winesList, setWinesList] = useState([]);
-  const [imagesList, setImagesList] = useState([]);
+  const [filteredWinesList, setFilteredWinesList] = useState([]);
   const [mergedWinesInfos, setMergedWinesInfos] = useState([]);
-
-  const [currentPage, setCurrentPage] = useState(1);
   const [currentWineList, setCurrentWineList] = useState([]);
+  const [imagesList, setImagesList] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     loading: bottlesLoading,
@@ -53,10 +52,11 @@ const useVinantic = () => {
         return { ...image, ref: imageRef };
       });
 
-      const mergedWinesInfos = mergeWineInfosByRef(
-        winesList,
-        formattedImagesList
-      );
+      const mergedWinesInfos = mergeWineInfosByRef({
+        winesData: winesList,
+        imagesData: formattedImagesList,
+      });
+
       setMergedWinesInfos(mergedWinesInfos);
       setFilteredWinesList(mergedWinesInfos);
     }
@@ -83,11 +83,11 @@ const useVinantic = () => {
     setCurrentWineList(currentWineList);
   }, [currentPage, filteredWinesList]);
 
-  const handleSearchChange = e => {
+  const handleSearchChange = (e) => {
     setSearchText(e.target.value);
   };
 
-  const handleSortChange = e => {
+  const handleSortChange = (e) => {
     setSortBy(e.target.value);
   };
 
@@ -99,11 +99,12 @@ const useVinantic = () => {
     currentPage,
     searchText,
     sortBy,
-    totalItems: filteredWinesList.length,
-    currentWineList,
+    totalWines: filteredWinesList.length,
+    winesList: currentWineList,
     handleSearchChange,
     handleSortChange,
     handlePageChange,
+    handleGeneratePdf: () => exportVinanticPdf(mergedWinesInfos),
   };
 };
 

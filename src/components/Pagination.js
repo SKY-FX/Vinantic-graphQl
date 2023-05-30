@@ -1,14 +1,14 @@
 import React from "react";
 import PropTypes from "prop-types";
 import classNames from "classnames";
+import { ITEMS_PER_PAGE } from "../constants";
 
 const Pagination = ({
   currentPage,
-  itemsPerPage,
   totalItems,
   onPageChange,
 }) => {
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
 
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
@@ -81,7 +81,6 @@ const Pagination = ({
 
 Pagination.propTypes = {
   currentPage: PropTypes.number.isRequired,
-  itemsPerPage: PropTypes.number.isRequired,
   totalItems: PropTypes.number.isRequired,
   onPageChange: PropTypes.func.isRequired,
 };

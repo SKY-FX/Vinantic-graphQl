@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useVinantic from "../hooks/useVinantic";
 import TextSearchInput from "./TextSearchInput";
 import SearchSelector from "./SearchSelector";
@@ -6,22 +6,9 @@ import WineCard from "./WineCard";
 import Title from "./Title";
 import Pagination from "./Pagination";
 
-const itemsPerPage = 70; // Nombre d'éléments à afficher par page
-
 const Vinantic = () => {
-  const { searchText, sortBy, wineList, handleSearchChange, handleSortChange } = useVinantic();
-
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // Calcul de l'index de début et de fin de la pagination
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentWineList = wineList.slice(indexOfFirstItem, indexOfLastItem);
-
-  // Fonction pour changer de page
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  const { currentPage, searchText, sortBy, totalItems, currentWineList, handleSearchChange, handleSortChange, handlePageChange } =
+    useVinantic();
 
   return (
     <div className="flex flex-col bg-gray-50 px-5">
@@ -45,8 +32,7 @@ const Vinantic = () => {
       <div className="mt-20">
         <Pagination
           currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          totalItems={wineList.length}
+          totalItems={totalItems}
           onPageChange={handlePageChange}
         />
       </div>
@@ -63,8 +49,7 @@ const Vinantic = () => {
       <div className="mt-20 mb-10">
         <Pagination
           currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          totalItems={wineList.length}
+          totalItems={totalItems}
           onPageChange={handlePageChange}
         />
       </div>

@@ -1,8 +1,15 @@
+import { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_BOTTLES } from "../graphql/bottleQueries";
 import { GET_IMAGES } from "../graphql/imageQueries";
-import { useEffect, useState } from "react";
-import { extractImageName, filterAndSortWineList, mergeWineInfosByRef } from "../components/helper";
+import { ITEMS_PER_PAGE } from "../constants";
+
+import {
+  extractImageName,
+  filterAndSortWineList,
+  mergeWineInfosByRef,
+} from "../components/helper";
+
 
 const useVinantic = () => {
   const [searchText, setSearchText] = useState("");
@@ -11,6 +18,9 @@ const useVinantic = () => {
   const [winesList, setWinesList] = useState([]);
   const [imagesList, setImagesList] = useState([]);
   const [mergedWinesInfos, setMergedWinesInfos] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [currentWineList, setCurrentWineList] = useState([]);
 
   const {
     loading: bottlesLoading,
@@ -63,20 +73,37 @@ const useVinantic = () => {
     }
   }, [searchText, sortBy]);
 
-  const handleSearchChange = (e) => {
+  useEffect(() => {
+    const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+    const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+    const currentWineList = filteredWinesList.slice(
+      indexOfFirstItem,
+      indexOfLastItem
+    );
+    setCurrentWineList(currentWineList);
+  }, [currentPage, filteredWinesList]);
+
+  const handleSearchChange = e => {
     setSearchText(e.target.value);
   };
 
-  const handleSortChange = (e) => {
+  const handleSortChange = e => {
     setSortBy(e.target.value);
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   return {
+    currentPage,
     searchText,
     sortBy,
-    wineList: filteredWinesList,
+    totalItems: filteredWinesList.length,
+    currentWineList,
     handleSearchChange,
-    handleSortChange
+    handleSortChange,
+    handlePageChange,
   };
 };
 

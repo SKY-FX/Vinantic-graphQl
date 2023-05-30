@@ -8,10 +8,14 @@ const bottleResolvers = require("./resolvers/bottleResolvers");
 const imageTypeDefs = require("./typeDefs/imageTypeDefs");
 const imageResolvers = require("./resolvers/imageResolvers");
 
+/* User Schema */
+const userTypeDefs = require("./typeDefs/userTypeDefs");
+const userResolvers = require("./resolvers/userResolvers");
+
 /* Merge Schema */
 const mergedSchema = makeExecutableSchema({
-  typeDefs: [bottleTypeDefs, imageTypeDefs],
-  resolvers: [bottleResolvers, imageResolvers]
+  typeDefs: [bottleTypeDefs, imageTypeDefs, userTypeDefs],
+  resolvers: [bottleResolvers, imageResolvers, userResolvers]
 });
 
 module.exports = mergedSchema;

@@ -36,8 +36,14 @@ const LoginFormPage = ({ onHandle }) => {
           permission: { ok },
         });
       } else setFormError(message);
-    }
+    } else if (userError) setFormError(userError);
   }, [userData, userError]);
+
+  useEffect(() => {
+    if (formError) setTimeout(() => {
+      setFormError(null);
+    }, 5000);
+  }, [formError]);
 
   return (
     <div className="flex justify-center items-center w-full">

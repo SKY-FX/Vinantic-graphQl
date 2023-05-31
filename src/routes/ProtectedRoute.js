@@ -7,8 +7,7 @@ const ProtectedRoute = ({ children }) => {
   const [isLogged, setIsLogged] = useState(false);
 
   const onHandle = ({ label, permission }) => {
-    console.info("HANDLE GET ADMIN PERMISSION", { label, permission });
-    setIsLogged(propOr(false, "ok", permission));
+    permission && setIsLogged(permission.ok);
   };
 
   return <>{isLogged ? children : <LoginFormPage onHandle={onHandle} />}</>;

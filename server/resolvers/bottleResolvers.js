@@ -11,6 +11,19 @@ const bottleResolvers = {
       }
     },
   },
+  Mutation: {
+    deleteAllBottles: async () => {
+      try {
+        await Bottle.deleteMany();
+        return {
+          ok: true,
+          message: "Toutes les bouteilles ont été supprimées avec succès.",
+        };
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+  }
 };
 
 module.exports = bottleResolvers;

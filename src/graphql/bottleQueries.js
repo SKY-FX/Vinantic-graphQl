@@ -12,3 +12,12 @@ export const GET_BOTTLES = gql`
     }
   }
 `;
+
+export const DELETE_ALL_BOTTLES = gql`
+  mutation deleteAllBottles {
+    deleteAllBottles {
+      ok
+      message
+    }
+  }
+`;

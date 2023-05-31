@@ -13,6 +13,15 @@ const bottleTypeDefs = gql`
   type Query {
     getBottles: [Bottle!]!
   }
+
+  type DeleteResponse {
+    ok: Boolean!
+    message: String!
+  }
+
+  type Mutation {
+    deleteAllBottles: DeleteResponse!
+  }
 `;
 
 module.exports = bottleTypeDefs;

@@ -12,9 +12,26 @@ const bottleResolvers = {
     },
   },
   Mutation: {
-    deleteAllBottles: async () => {
+    setBottles: async (root, args) => {
+      try {
+        const { bottles } = args;
+        for (let i = 0; i < bottles.length; i++) {
+          const bottle = new Bottle(bottles[i]);
+          await bottle.save();
+        }
+
+        return {
+          ok: true,
+          message: "Toutes les bouteilles ont été ajoutées avec succès.",
+        };
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    deleteBottles: async () => {
       try {
         await Bottle.deleteMany();
+
         return {
           ok: true,
           message: "Toutes les bouteilles ont été supprimées avec succès.",
@@ -23,7 +40,7 @@ const bottleResolvers = {
         throw new Error(err);
       }
     },
-  }
+  },
 };
 
 module.exports = bottleResolvers;

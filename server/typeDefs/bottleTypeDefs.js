@@ -7,20 +7,35 @@ const bottleTypeDefs = gql`
     price: Float!
     year: Int!
     quality: String!
-    ref: String!
+  }
+
+  input InputBottle {
+    name: String!
+    price: Int!
+    year: Int!
+    quality: String!
+    bottleRef: String!
+    bottleType: String!
+    city: String!
+    quantity: Int!
+    wineType: String!
+  }
+
+  type mutationResponse {
+    ok: Boolean!
+    message: String!
   }
 
   type Query {
     getBottles: [Bottle!]!
   }
 
-  type DeleteResponse {
-    ok: Boolean!
-    message: String!
+  type Mutation {
+    setBottles(bottles: [InputBottle!]!): mutationResponse!
   }
 
   type Mutation {
-    deleteAllBottles: DeleteResponse!
+    deleteBottles: mutationResponse!
   }
 `;
 

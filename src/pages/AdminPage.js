@@ -1,26 +1,76 @@
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { DELETE_ALL_BOTTLES } from "../graphql/bottleQueries";
+import { DELETE_BOTTLES, SET_BOTTLES } from "../graphql/bottleQueries";
 import XLSX from "xlsx/dist/xlsx.full.min";
-import { applySpec, compose, equals, map, prop, propOr, reject } from "ramda";
-import { mapIndexed, notEqual } from "ramda-adjunct";
+import { applySpec, compose, map, prop, propOr } from "ramda";
+import { mapIndexed } from "ramda-adjunct";
 import { transformBottles } from "./helper";
+import { DELETE_IMAGES, SET_IMAGES } from "../graphql/imageQueries";
 
 const AdminPage = () => {
   const [backMessage, setBackMessage] = useState();
-  const [winesList, setWinesList] = useState([]);
+  const [bottlesList, setBottlesList] = useState([]);
+  const [imagesList, setImagesList] = useState([]);
 
   const [
-    deleteAllBottles,
-    { loading: bottlesLoading, error: bottlesError, data: bottlesData },
-  ] = useMutation(DELETE_ALL_BOTTLES);
+    deleteBottles,
+    {
+      loading: deleteBottlesLoading,
+      error: deleteBottlesError,
+      data: deleteBottlesData,
+    },
+  ] = useMutation(DELETE_BOTTLES);
+
+  const [
+    deleteImages,
+    {
+      loading: deleteImagesLoading,
+      error: deleteImagesError,
+      data: deleteImagesData,
+    },
+  ] = useMutation(DELETE_IMAGES);
+
+  const [
+    setBottles,
+    {
+      loading: setBottlesLoading,
+      error: setBottlesError,
+      data: setBottlesData,
+    },
+  ] = useMutation(SET_BOTTLES);
+
+  const [
+    setImages,
+    { loading: setImagesLoading, error: setImagesError, data: setImagesData },
+  ] = useMutation(SET_IMAGES);
 
   useEffect(() => {
-    if (bottlesData) {
-      const { message } = bottlesData.deleteAllBottles;
+    if (deleteBottlesData) {
+      const { message } = deleteBottlesData.deleteBottles;
       setBackMessage(message);
-    } else if (bottlesError) setBackMessage(bottlesError);
-  }, [bottlesError, bottlesData]);
+    } else if (deleteBottlesError) setBackMessage(deleteBottlesError);
+  }, [deleteBottlesError, deleteBottlesData]);
+
+  useEffect(() => {
+    if (deleteImagesData) {
+      const { message } = deleteImagesData.deleteImages;
+      setBackMessage(message);
+    } else if (deleteImagesError) setBackMessage(deleteImagesError);
+  }, [deleteImagesError, deleteImagesData]);
+
+  useEffect(() => {
+    if (setImagesData) {
+      const { message } = setImagesData.setImages;
+      setBackMessage(message);
+    } else if (setImagesError) setBackMessage(setImagesError);
+  }, [setImagesError, setImagesData]);
+
+  useEffect(() => {
+    if (setBottlesData) {
+      const { message } = setBottlesData.setBottles;
+      setBackMessage(message);
+    } else if (setBottlesError) setBackMessage(setBottlesError);
+  }, [setBottlesError, setBottlesData]);
 
   useEffect(() => {
     if (backMessage)
@@ -29,7 +79,7 @@ const AdminPage = () => {
       }, 3000);
   }, [backMessage]);
 
-  const handleFileUpload = (event) => {
+  const handleXlsFileUpload = (event) => {
     if (event) {
       const file = event.target.files[0];
       const reader = new FileReader();
@@ -41,22 +91,24 @@ const AdminPage = () => {
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
         const filteredWines = compose(
-          map(applySpec({
-            year: propOr(0, "Année"),
-            name: propOr("", "Château"),
-            bottleType: propOr("", "Contenant"),
-            price: propOr(0, "Prix sur le marché"),
-            quality: propOr("", "Qualité"),
-            bottleRef: (wine) => propOr("", "Référence", wine).toLowerCase(),
-            wineType: propOr("", "Type"),
-            city: propOr("", "Ville"),
-            quantity: propOr(0, "Quantity"),
-          })),
+          map(
+            applySpec({
+              year: propOr(0, "Année"),
+              name: propOr("", "Château"),
+              bottleType: propOr("", "Contenant"),
+              price: propOr(0, "Prix sur le marché"),
+              quality: propOr("", "Qualité"),
+              bottleRef: (wine) => propOr("", "Référence", wine).toLowerCase(),
+              wineType: propOr("", "Type"),
+              city: propOr("", "Ville"),
+              quantity: propOr(0, "Quantity"),
+            })
+          ),
           transformBottles
         )(jsonData);
 
-        console.info("wines", filteredWines);
-        setWinesList(filteredWines);
+        setBottlesList(filteredWines); // Set to State
+        setBottles({ variables: { bottles: filteredWines } }); // Set to Base
       };
 
       reader.onerror = (error) => {
@@ -67,38 +119,58 @@ const AdminPage = () => {
     }
   };
 
+  const handleDeleteBottles = () => {
+    deleteBottles();
+    setBottlesList([]);
+  };
+
+  const handleDeleteImages = () => {
+    deleteImages();
+    setImagesList([]);
+  };
+
   return (
     <div className="flex flex-col items-center">
-      {bottlesLoading ? (
-        <p>En cours de chargement...</p>
-      ) : (
-        backMessage && (
-          <p className="my-20 text-xl text-green-900">{backMessage}</p>
-        )
-      )}
+      {deleteBottlesLoading ||
+      setImagesLoading ||
+      deleteImagesLoading ||
+      setBottlesLoading ? (
+          <p>En cours de chargement...</p>
+        ) : (
+          backMessage && (
+            <p className="my-20 text-xl text-green-900">{backMessage}</p>
+          )
+        )}
 
       <button
         className="transition ease-in-out delay-50 font-mono bg-gray-50 p-10 border hover:bg-gray-300 hover:text-white duration-300 mt-10"
-        onClick={() => deleteAllBottles()}
+        onClick={handleDeleteBottles}
       >
-        DELETE ALL BOTTLES FROM BASE
+        DELETE INFOS WINES FROM BASE
       </button>
 
       <button
         className="transition ease-in-out delay-50 font-mono bg-gray-50 p-10 border hover:bg-gray-300 hover:text-white duration-300 mt-10"
-        onClick={() => deleteAllBottles()}
+        onClick={handleDeleteImages}
       >
-        SET ALL BOTTLES TO BASE
+        DELETE PICS WINES FROM BASE
       </button>
 
       <label
         className="transition ease-in-out delay-50 font-mono bg-gray-50 p-10 border hover:bg-gray-300 hover:text-white duration-300 cursor-pointer mt-10"
-        onChange={handleFileUpload}
-        htmlFor="uploadFileInput"
+        onChange={handleXlsFileUpload}
+        htmlFor="uploadXlsFileInput"
       >
-        <input id="uploadFileInput" className="hidden" type="file" />
-        UPLOAD EXCEL FILE
+        <input id="uploadXlsFileInput" className="hidden" type="file" />
+        GET INFOS WINES FROM XLS FILE AND SET TO BASE
       </label>
+
+      <button
+        className="transition ease-in-out delay-50 font-mono bg-gray-50 p-10 border hover:bg-gray-300 hover:text-white duration-300 mt-10"
+        onClick={setImages}
+      >
+        GET PICS WINES FROM FOLDER AND SET TO BASE
+      </button>
 
       <table className="table-auto w-full text-left mt-10">
         <thead>
@@ -127,9 +199,13 @@ const AdminPage = () => {
                 <td className="border px-4 py-2">{prop("price", bottle)}</td>
                 <td className="border px-4 py-2">{prop("year", bottle)}</td>
                 <td className="border px-4 py-2">{prop("quality", bottle)}</td>
-                <td className="border px-4 py-2">{prop("bottleType", bottle)}</td>
+                <td className="border px-4 py-2">
+                  {prop("bottleType", bottle)}
+                </td>
                 <td className="border px-4 py-2">{prop("wineType", bottle)}</td>
-                <td className="border px-4 py-2">{prop("bottleRef", bottle)}</td>
+                <td className="border px-4 py-2">
+                  {prop("bottleRef", bottle)}
+                </td>
                 <td className="border px-4 py-2">{prop("quantity", bottle)}</td>
                 <td className="border px-4 py-2">
                   {/* <img
@@ -140,7 +216,7 @@ const AdminPage = () => {
                 </td>
               </tr>
             );
-          })(winesList)}
+          })(bottlesList)}
         </tbody>
       </table>
     </div>

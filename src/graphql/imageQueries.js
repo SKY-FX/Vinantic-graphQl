@@ -10,3 +10,21 @@ export const GET_IMAGES = gql`
     }
   }
 `;
+
+export const SET_IMAGES = gql`
+  mutation setImages {
+    setImages {
+      ok
+      message
+    }
+  }
+`;
+
+export const DELETE_IMAGES = gql`
+  mutation deleteImages {
+    deleteImages {
+      ok
+      message
+    }
+  }
+`;

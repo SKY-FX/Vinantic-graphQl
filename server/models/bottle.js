@@ -17,10 +17,26 @@ const bottleSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  ref: {
+  bottleRef: {
     type: String,
     required: true,
   },
+  bottleType: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  wineType: {
+    type: String,
+    required: true,
+  }
 });
 
 const Bottle = mongoose.model("Bottle", bottleSchema);

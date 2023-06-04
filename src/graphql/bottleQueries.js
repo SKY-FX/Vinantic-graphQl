@@ -13,9 +13,18 @@ export const GET_BOTTLES = gql`
   }
 `;
 
-export const DELETE_ALL_BOTTLES = gql`
-  mutation deleteAllBottles {
-    deleteAllBottles {
+export const SET_BOTTLES = gql`
+  mutation setBottles($bottles: [InputBottle!]!) {
+    setBottles(bottles: $bottles) {
+      ok
+      message
+    }
+  }
+`;
+
+export const DELETE_BOTTLES = gql`
+  mutation deleteBottles {
+    deleteBottles {
       ok
       message
     }

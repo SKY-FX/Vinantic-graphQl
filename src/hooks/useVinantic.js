@@ -4,12 +4,7 @@ import { GET_BOTTLES } from "../graphql/bottleQueries";
 import { GET_IMAGES } from "../graphql/imageQueries";
 import { ITEMS_PER_PAGE, SEARCH_SELECTOR_OPTIONS } from "../constants";
 
-import {
-  exportVinanticPdf,
-  extractImageName,
-  filterAndSortWineList,
-  mergeWineInfosByRef,
-} from "../components/helper";
+import { exportVinanticPdf, extractImageName, filterAndSortWineList, mergeWineInfosByRef } from "../components/helper";
 
 const useVinantic = () => {
   const [searchText, setSearchText] = useState("");
@@ -21,26 +16,18 @@ const useVinantic = () => {
   const [imagesList, setImagesList] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const {
-    loading: bottlesLoading,
-    error: bottlesError,
-    data: bottlesData,
-  } = useQuery(GET_BOTTLES);
+  const { loading: bottlesLoading, error: bottlesError, data: bottlesData } = useQuery(GET_BOTTLES);
 
-  const {
-    loading: imagesLoading,
-    error: imagesError,
-    data: imagesData,
-  } = useQuery(GET_IMAGES);
+  const { loading: imagesLoading, error: imagesError, data: imagesData } = useQuery(GET_IMAGES);
 
   useEffect(() => {
     if (!bottlesLoading && bottlesData) {
-      const wineList = bottlesData.getBottles;
+      const wineList = bottlesData.getBottles.data;
       setWinesList(wineList);
     }
 
     if (!imagesLoading && imagesData) {
-      const images = imagesData.getImages;
+      const images = imagesData.getImages.data;
       setImagesList(images);
     }
   }, [bottlesData, imagesData, imagesLoading, imagesData]);
@@ -76,10 +63,7 @@ const useVinantic = () => {
   useEffect(() => {
     const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
     const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
-    const currentWineList = filteredWinesList.slice(
-      indexOfFirstItem,
-      indexOfLastItem
-    );
+    const currentWineList = filteredWinesList.slice(indexOfFirstItem, indexOfLastItem);
     setCurrentWineList(currentWineList);
   }, [currentPage, filteredWinesList]);
 

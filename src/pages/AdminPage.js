@@ -57,7 +57,6 @@ const AdminPage = () => {
     onCompleted: (data) => {
       const { ok, message, data: images } = data.getImages;
       if (ok) {
-        console.info("images", images);
         setImagesList(images);
         setBackMessage(message);
       } else setBackMessage("Une erreur est survenue");
@@ -69,7 +68,6 @@ const AdminPage = () => {
     onCompleted: (data) => {
       const { ok, message, data: bottles } = data.getBottles;
       if (ok) {
-        console.info("bottles", bottles);
         setBottlesList(bottles);
         setBackMessage(message);
       } else setBackMessage("Une erreur est survenue");

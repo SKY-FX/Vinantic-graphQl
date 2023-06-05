@@ -2,19 +2,13 @@ import { jsPDF } from "jspdf";
 
 export const extractImageName = (filename) => {
   const nameWithExtension = filename.split("\\").pop(); // Récupère le nom de fichier avec l'extension
-  const nameWithoutExtension = nameWithExtension
-    .split(".")
-    .slice(0, -1)
-    .join("."); // Supprime l'extension du nom de fichier
+  const nameWithoutExtension = nameWithExtension.split(".").slice(0, -1).join("."); // Supprime l'extension du nom de fichier
   return nameWithoutExtension;
 };
 
 export const mergeWineInfosByRef = ({ winesData, imagesData }) =>
   winesData.map((wine) => {
-    const matchingImage = imagesData.find(
-      (image) => image.ref.toLowerCase() === wine.ref.toLowerCase()
-    );
-
+    const matchingImage = imagesData.find((image) => image.ref.toLowerCase() === wine.bottleRef.toLowerCase());
     if (matchingImage) {
       return {
         ...wine,
@@ -29,16 +23,9 @@ export const mergeWineInfosByRef = ({ winesData, imagesData }) =>
     };
   });
 
-export const filterAndSortWineList = ({
-  wineList,
-  setFilteredWinesList,
-  searchText,
-  sortBy,
-}) => {
+export const filterAndSortWineList = ({ wineList, setFilteredWinesList, searchText, sortBy }) => {
   // Filtrer les bouteilles de vin en fonction du texte de recherche
-  let filteredList = wineList.filter((wine) =>
-    wine.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+  let filteredList = wineList.filter((wine) => wine.name.toLowerCase().includes(searchText.toLowerCase()));
 
   // Trier les bouteilles de vin en fonction de l'option de tri sélectionnée
   if (sortBy === "year") {
@@ -73,8 +60,7 @@ export const exportVinanticPdf = (winesList) => {
 
     /* CREATE HEADER */
     const header = document.createElement("div");
-    header.style.cssText =
-      "display: flex; flex-direction: column; text-align: center; justify-content: center; letter-spacing: 5px";
+    header.style.cssText = "display: flex; flex-direction: column; text-align: center; justify-content: center; letter-spacing: 5px";
     header.style.width = HTML_Width - MARGIN * 2 + "px";
     header.style.height = PDF_Height + "px";
 
@@ -98,12 +84,14 @@ export const exportVinanticPdf = (winesList) => {
     const pdf = new jsPDF({
       orientation: "portrait",
       unit: "pt",
-      format: [PDF_Width, PDF_Height]
+      format: [PDF_Width, PDF_Height],
     });
 
     /* ADD AND SAVE MAIN DIV TO PDF SPLIT PAGE OPTION (PDF_Height) */
-    pdf.html(globalDivPdf, {pagesplit: true}).then(() => {
+    pdf.html(globalDivPdf, { pagesplit: true }).then(() => {
       pdf.save("Catalogue de vins - Vinantic.pdf");
     });
   }
 };
+
+

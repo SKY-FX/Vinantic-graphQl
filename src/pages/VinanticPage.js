@@ -56,7 +56,7 @@ const VinanticPage = () => {
       <div className="grid gap-5 2xl:grid-cols-5 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 mt-10">
         {totalWines !== 0 &&
           winesList.map((wine) => (
-            <div key={wine.id}>
+            <div key={`wine-${wine.id}`}>
               <WineCard wine={wine} />
             </div>
           ))}

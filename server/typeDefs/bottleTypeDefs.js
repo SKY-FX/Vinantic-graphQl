@@ -4,9 +4,14 @@ const bottleTypeDefs = gql`
   type Bottle {
     id: ID!
     name: String!
-    price: Float!
+    price: Int!
     year: Int!
     quality: String!
+    bottleRef: String!
+    bottleType: String!
+    city: String!
+    quantity: Int!
+    wineType: String!
   }
 
   input InputBottle {
@@ -21,13 +26,19 @@ const bottleTypeDefs = gql`
     wineType: String!
   }
 
+  type bottleQueryResponse {
+    ok: Boolean!
+    message: String!
+    data: [Bottle!]!
+  }
+
   type mutationResponse {
     ok: Boolean!
     message: String!
   }
 
   type Query {
-    getBottles: [Bottle!]!
+    getBottles: bottleQueryResponse!
   }
 
   type Mutation {

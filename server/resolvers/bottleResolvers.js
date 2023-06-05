@@ -5,7 +5,11 @@ const bottleResolvers = {
     getBottles: async () => {
       try {
         const bottles = await Bottle.find();
-        return bottles;
+        return {
+          ok: true,
+          message: "Toutes les infos ont été récupérées à partir de la base de donnée",
+          data: bottles
+        };
       } catch (err) {
         throw new Error(err);
       }

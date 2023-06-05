@@ -1,76 +1,80 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
-import { DELETE_BOTTLES, SET_BOTTLES } from "../graphql/bottleQueries";
+import { DELETE_BOTTLES, GET_BOTTLES, SET_BOTTLES } from "../graphql/bottleQueries";
 import XLSX from "xlsx/dist/xlsx.full.min";
 import { applySpec, compose, map, prop, propOr } from "ramda";
 import { mapIndexed } from "ramda-adjunct";
 import { transformBottles } from "./helper";
-import { DELETE_IMAGES, SET_IMAGES } from "../graphql/imageQueries";
+import { DELETE_IMAGES, GET_IMAGES, SET_IMAGES } from "../graphql/imageQueries";
 
 const AdminPage = () => {
   const [backMessage, setBackMessage] = useState();
   const [bottlesList, setBottlesList] = useState([]);
   const [imagesList, setImagesList] = useState([]);
 
-  const [
-    deleteBottles,
-    {
-      loading: deleteBottlesLoading,
-      error: deleteBottlesError,
-      data: deleteBottlesData,
+  const [deleteBottles, { loading: deleteBottlesLoading }] = useMutation(DELETE_BOTTLES, {
+    onError: (error) => setBackMessage(error.message),
+    onCompleted: (data) => {
+      const { ok, message } = data.deleteBottles;
+      if (ok) {
+        setBackMessage(message);
+        setBottlesList([]);
+      } else setBackMessage("Une erreur est survenue");
     },
-  ] = useMutation(DELETE_BOTTLES);
+  });
 
-  const [
-    deleteImages,
-    {
-      loading: deleteImagesLoading,
-      error: deleteImagesError,
-      data: deleteImagesData,
+  const [deleteImages, { loading: deleteImagesLoading, error: deleteImagesError, data: deleteImagesData }] = useMutation(DELETE_IMAGES, {
+    onError: (error) => setBackMessage(error.message),
+    onCompleted: (data) => {
+      const { ok, message } = data.deleteImages;
+      if (ok) {
+        setBackMessage(message);
+        setImagesList([]);
+      } else setBackMessage("Une erreur est survenue");
     },
-  ] = useMutation(DELETE_IMAGES);
+  });
 
-  const [
-    setBottles,
-    {
-      loading: setBottlesLoading,
-      error: setBottlesError,
-      data: setBottlesData,
+  const [setBottles, { loading: setBottlesLoading }] = useMutation(SET_BOTTLES, {
+    onError: (error) => setBackMessage(error.message),
+    onCompleted: (data) => {
+      const { ok, message } = data.setBottles;
+      if (ok) setBackMessage(message);
+      else setBackMessage("Une erreur est survenue");
     },
-  ] = useMutation(SET_BOTTLES);
+  });
 
-  const [
-    setImages,
-    { loading: setImagesLoading, error: setImagesError, data: setImagesData },
-  ] = useMutation(SET_IMAGES);
+  const [setImages, { loading: setImagesLoading, error: setImagesError, data: setImagesData }] = useMutation(SET_IMAGES, {
+    onError: (error) => setBackMessage(error.message),
+    onCompleted: (data) => {
+      const { ok, message } = data.setImages;
+      if (ok) setBackMessage(message);
+      else setBackMessage("Une erreur est survenue");
+    },
+  });
 
-  useEffect(() => {
-    if (deleteBottlesData) {
-      const { message } = deleteBottlesData.deleteBottles;
-      setBackMessage(message);
-    } else if (deleteBottlesError) setBackMessage(deleteBottlesError);
-  }, [deleteBottlesError, deleteBottlesData]);
+  const [getImages, { loading: getImagesLoading }] = useLazyQuery(GET_IMAGES, {
+    onError: (error) => setBackMessage(error.message),
+    onCompleted: (data) => {
+      const { ok, message, data: images } = data.getImages;
+      if (ok) {
+        console.info("images", images);
+        setImagesList(images);
+        setBackMessage(message);
+      } else setBackMessage("Une erreur est survenue");
+    },
+  });
 
-  useEffect(() => {
-    if (deleteImagesData) {
-      const { message } = deleteImagesData.deleteImages;
-      setBackMessage(message);
-    } else if (deleteImagesError) setBackMessage(deleteImagesError);
-  }, [deleteImagesError, deleteImagesData]);
-
-  useEffect(() => {
-    if (setImagesData) {
-      const { message } = setImagesData.setImages;
-      setBackMessage(message);
-    } else if (setImagesError) setBackMessage(setImagesError);
-  }, [setImagesError, setImagesData]);
-
-  useEffect(() => {
-    if (setBottlesData) {
-      const { message } = setBottlesData.setBottles;
-      setBackMessage(message);
-    } else if (setBottlesError) setBackMessage(setBottlesError);
-  }, [setBottlesError, setBottlesData]);
+  const [getBottles, { loading: getBottlesLoading }] = useLazyQuery(GET_BOTTLES, {
+    onError: (error) => setBackMessage(error.message),
+    onCompleted: (data) => {
+      const { ok, message, data: bottles } = data.getBottles;
+      if (ok) {
+        console.info("bottles", bottles);
+        setBottlesList(bottles);
+        setBackMessage(message);
+      } else setBackMessage("Une erreur est survenue");
+    },
+  });
 
   useEffect(() => {
     if (backMessage)
@@ -107,7 +111,6 @@ const AdminPage = () => {
           transformBottles
         )(jsonData);
 
-        setBottlesList(filteredWines); // Set to State
         setBottles({ variables: { bottles: filteredWines } }); // Set to Base
       };
 
@@ -119,39 +122,24 @@ const AdminPage = () => {
     }
   };
 
-  const handleDeleteBottles = () => {
-    deleteBottles();
-    setBottlesList([]);
-  };
-
-  const handleDeleteImages = () => {
-    deleteImages();
-    setImagesList([]);
-  };
-
   return (
     <div className="flex flex-col items-center">
-      {deleteBottlesLoading ||
-      setImagesLoading ||
-      deleteImagesLoading ||
-      setBottlesLoading ? (
-          <p>En cours de chargement...</p>
-        ) : (
-          backMessage && (
-            <p className="my-20 text-xl text-green-900">{backMessage}</p>
-          )
-        )}
+      {setImagesLoading || setBottlesLoading || deleteImagesLoading || deleteBottlesLoading || getImagesLoading || getBottlesLoading ? (
+        <p>En cours de chargement...</p>
+      ) : (
+        backMessage && <p className="my-20 text-xl text-green-900">{backMessage}</p>
+      )}
 
       <button
         className="transition ease-in-out delay-50 font-mono bg-gray-50 p-10 border hover:bg-gray-300 hover:text-white duration-300 mt-10"
-        onClick={handleDeleteBottles}
+        onClick={deleteBottles}
       >
         DELETE INFOS WINES FROM BASE
       </button>
 
       <button
         className="transition ease-in-out delay-50 font-mono bg-gray-50 p-10 border hover:bg-gray-300 hover:text-white duration-300 mt-10"
-        onClick={handleDeleteImages}
+        onClick={deleteImages}
       >
         DELETE PICS WINES FROM BASE
       </button>
@@ -170,6 +158,20 @@ const AdminPage = () => {
         onClick={setImages}
       >
         GET PICS WINES FROM FOLDER AND SET TO BASE
+      </button>
+
+      <button
+        className="transition ease-in-out delay-50 font-mono bg-gray-50 p-10 border hover:bg-gray-300 hover:text-white duration-300 mt-10"
+        onClick={getImages}
+      >
+        GET PICS WINES FROM BASE
+      </button>
+
+      <button
+        className="transition ease-in-out delay-50 font-mono bg-gray-50 p-10 border hover:bg-gray-300 hover:text-white duration-300 mt-10"
+        onClick={getBottles}
+      >
+        GET INFOS WINES FROM BASE
       </button>
 
       <table className="table-auto w-full text-left mt-10">
@@ -199,13 +201,9 @@ const AdminPage = () => {
                 <td className="border px-4 py-2">{prop("price", bottle)}</td>
                 <td className="border px-4 py-2">{prop("year", bottle)}</td>
                 <td className="border px-4 py-2">{prop("quality", bottle)}</td>
-                <td className="border px-4 py-2">
-                  {prop("bottleType", bottle)}
-                </td>
+                <td className="border px-4 py-2">{prop("bottleType", bottle)}</td>
                 <td className="border px-4 py-2">{prop("wineType", bottle)}</td>
-                <td className="border px-4 py-2">
-                  {prop("bottleRef", bottle)}
-                </td>
+                <td className="border px-4 py-2">{prop("bottleRef", bottle)}</td>
                 <td className="border px-4 py-2">{prop("quantity", bottle)}</td>
                 <td className="border px-4 py-2">
                   {/* <img

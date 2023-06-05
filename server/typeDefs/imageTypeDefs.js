@@ -8,13 +8,19 @@ const imageTypeDefs = gql`
     data: String!
   }
 
+  type imageQueryResponse {
+    ok: Boolean!
+    message: String!
+    data: [Image!]!
+  }
+
   type mutationResponse {
     ok: Boolean!
     message: String!
   }
 
   type Query {
-    getImages: [Image!]!
+    getImages: imageQueryResponse!
   }
 
   type Mutation {

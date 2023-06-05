@@ -3,12 +3,20 @@ import { gql } from '@apollo/client';
 export const GET_BOTTLES = gql`
   query getBottles {
     getBottles {
-      id
-      name
-      price
-      year
-      quality
-      ref
+      ok
+      message
+      data {
+        id
+        name
+        price
+        year
+        quality
+        bottleRef
+        bottleType
+        city
+        quantity
+        wineType
+      }
     }
   }
 `;

@@ -12,12 +12,18 @@ const imageResolvers = {
       try {
         const images = await Image.find();
 
-        return images.map((image) => ({
+        const newImages = images.map((image) => ({
           id: image._id.toString(),
           filename: image.filename,
           contentType: image.contentType,
           data: image.data.toString("base64"),
         }));
+
+        return {
+          ok: true,
+          message: "Toutes les images ont été récupérées à partir de la base de donnée",
+          data: newImages
+        }
       } catch (err) {
         throw new Error(err);
       }

@@ -4,7 +4,7 @@ import { DELETE_BOTTLES, GET_BOTTLES, SET_BOTTLES } from "../graphql/bottleQueri
 import XLSX from "xlsx/dist/xlsx.full.min";
 import { applySpec, compose, map, prop, propOr } from "ramda";
 import { mapIndexed } from "ramda-adjunct";
-import { transformBottles } from "./helper";
+import { getImageSource, transformBottles } from "./helper";
 import { DELETE_IMAGES, GET_IMAGES, SET_IMAGES } from "../graphql/imageQueries";
 
 const AdminPage = () => {
@@ -191,8 +191,7 @@ const AdminPage = () => {
         </thead>
         <tbody>
           {mapIndexed((bottle, idx) => {
-            // const imageSrc = getImageSource({ bottle, imagesList });
-            const imageSrc = "";
+            const imageSrc = getImageSource({ bottle, imagesList });
 
             return (
               <tr key={`bottle-${idx}`} className="hover:bg-gray-100">
@@ -206,11 +205,11 @@ const AdminPage = () => {
                 <td className="border px-4 py-2">{prop("bottleRef", bottle)}</td>
                 <td className="border px-4 py-2">{prop("quantity", bottle)}</td>
                 <td className="border px-4 py-2">
-                  {/* <img
+                  <img
                     className="w-24"
                     src={imageSrc}
                     alt={prop("name", bottle)}
-                  /> */}
+                  />
                 </td>
               </tr>
             );

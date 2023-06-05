@@ -79,7 +79,6 @@ const saveImages = async (imagesFiles) => {
       });
 
       await newImage.save();
-      console.log(`Image saved to the database: ${imagePath}`);
     });
 
     await Promise.all(savePromises);

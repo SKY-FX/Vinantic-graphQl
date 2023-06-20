@@ -1,5 +1,6 @@
 {
   "name": "vinantic",
+  "homepage": "https://www.vinantic.fr/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
